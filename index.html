@@ -165,23 +165,25 @@ layout: false
 ### First example
 
 ```
-    class Fruit:
-        &#34;&#34;&#34;A fruit object class&#34;&#34;&#34;
+&gt;&gt;&gt; class Fruit:
+...     &#34;&#34;&#34;A fruit object class&#34;&#34;&#34;
+...
+...     def __init__(self, name):
+...         print(&#34;entering Fruit.__init__&#34;)
+...         self.name = name
+...
+...     def __str__(self):
+...         print(&#34;entering Fruit.__str__&#34;)
+...         return &#34;%s tastes sweet!&#34; % self.name
 
-        def __init__(self, name):
-            print &#34;entering Fruit.__init__&#34;
-            self.name = name
-
-        def __str__(self):
-            print &#34;entering Fruit.__str__&#34;
-            return &#34;%s tastes sweet!&#34; % self.name
 ```
 ```
-    &gt;&gt;&gt; fruit = Fruit(&#34;Banana&#34;)
-    entering Fruit.__init__
-    &gt;&gt;&gt; print fruit
-    entering Fruit.__str__
-    Banana tastes sweet
+&gt;&gt;&gt; fruit = Fruit(&#34;Banana&#34;)
+entering Fruit.__init__
+&gt;&gt;&gt; print(fruit)
+entering Fruit.__str__
+Banana tastes sweet!
+
 ```
 ---
 
@@ -191,17 +193,19 @@ layout: false
 * Just redefine the ``__str__`` function
 
 ```
-    class Citrus(Fruit):
-        def __str__(self):
-            print &#34;entering Citrus.__str__&#34;
-            return &#34;%s tastes sour&#34; % self.name
+&gt;&gt;&gt; class Citrus(Fruit):
+...     def __str__(self):
+...         print(&#34;entering Citrus.__str__&#34;)
+...         return &#34;%s tastes sour&#34; % self.name
+
 ```
 ```
     &gt;&gt;&gt; lemon = Citrus(&#34;Lemon&#34;)
     entering Fruit.__init__
-    &gt;&gt;&gt; print lemon
+    &gt;&gt;&gt; print(lemon)
     entering Citrus.__str__
     Lemon tastes sour
+
 ```
 
 * Note that we enter the `__init__` method of the parent class `Fruit`
@@ -217,25 +221,27 @@ Consider a more specialized class
 * Call the ``__init__`` function of the parent class to initialize the inherited attributes
 
 ```
-    class FruitWithTaste(Fruit):
-        &#34;&#34;&#34; A fruit object class with taste&#34;&#34;&#34;
-        
-        def __init__(self, name, taste=&#34;sweet&#34;):
-            print &#34;entering FruitWithTaste.__init__&#34;
-            Fruit.__init__(self, name) 
-            self.taste = taste
+&gt;&gt;&gt; class FruitWithTaste(Fruit):
+...     &#34;&#34;&#34; A fruit object class with taste&#34;&#34;&#34;
+...     
+...     def __init__(self, name, taste=&#34;sweet&#34;):
+...         print(&#34;entering FruitWithTaste.__init__&#34;)
+...         Fruit.__init__(self, name) 
+...         self.taste = taste
+...
+...     def __str__(self):
+...         print(&#34;entering FruitWithTaste.__str__&#34;)
+...         return &#34;%s tastes %s!&#34; % (self.name, self.taste)
 
-        def __str__(self):
-            print &#34;entering FruitWithTaste.__str__&#34;
-            return &#34;%s tastes %s!&#34; % (self.name, self.taste)
 ```
-````
-    &gt;&gt;&gt; apple = FruitWithTaste(&#34;Apple&#34;)
-    entering FruitWithTaste.__init__
-    entering Fruit.__init__
-    &gt;&gt;&gt; print apple
-    entering FruitWithTaste.__str__
-    Apple tastes sweet!
+```
+&gt;&gt;&gt; apple = FruitWithTaste(&#34;Apple&#34;)
+entering FruitWithTaste.__init__
+entering Fruit.__init__
+&gt;&gt;&gt; print(apple)
+entering FruitWithTaste.__str__
+Apple tastes sweet!
+
 ```
 
 ---
@@ -251,16 +257,35 @@ Consider a more specialized class
 * o-o approach - only alter data through defined class methods 
 
 ```
-        def rot(self):
-            self.taste = &#34;rotten&#34;
+&gt;&gt;&gt; class FruitWithTaste(Fruit):
+...     &#34;&#34;&#34; A fruit object class with taste&#34;&#34;&#34;
+...     
+...     def __init__(self, name, taste=&#34;sweet&#34;):
+...         print(&#34;entering FruitWithTaste.__init__&#34;)
+...         Fruit.__init__(self, name) 
+...         self.taste = taste
+...
+...     def __str__(self):
+...         print(&#34;entering FruitWithTaste.__str__&#34;)
+...         return &#34;%s tastes %s!&#34; % (self.name, self.taste)
+...     def rot(self):
+...         self.taste = &#34;rotten&#34;
+
 ```
 ```
-    &gt;&gt;&gt; apple.rot()
-    entering FruitWithTaste.rot
-    print &#34;entering FruitWithTaste.rot&#34;
-    &gt;&gt;&gt; print apple
-    entering FruitWithTaste.__str__
-    Apple tastes rotten!
+&gt;&gt;&gt; apple = FruitWithTaste(&#34;Apple&#34;)
+entering FruitWithTaste.__init__
+entering Fruit.__init__
+
+```
+&gt;&gt;&gt; apple.rot()
+
+```
+```
+&gt;&gt;&gt; print(apple)
+entering FruitWithTaste.__str__
+Apple tastes rotten!
+
 ```
 ---
 
@@ -269,41 +294,41 @@ Consider a more specialized class
 
 * in older code class definitions have the form
 ```
-    def OldClass:
-        def __ init__(self, indata):
-            self .data = indata
-        ...
+&gt;&gt;&gt; class OldClass:
+...
+...     def __init__(self, indata):
+...         self .data = indata
+
 ```
 
 * in newer code top-level classes are written as a subclass of a general object class
 
 ```
-    def NewClass(object):
-        def __ init__(self, indata):
-            self .data = indata
-        ...
+&gt;&gt;&gt; class NewClass(object):
+...     def __init__(self, indata):
+...         self .data = indata
+
 ```   
 ---
 
-To illustrate the diffrence
+To illustrate the difference
 
 ```
-    &gt;&gt;&gt; old = OldClass(&#39;some input&#39;)
-    &gt;&gt;&gt; print type(old)
-    &lt;type &#39;instance&#39;&gt;
-    &gt;&gt;&gt; print dir(old)
-    [&#39;__doc__&#39;, &#39;__init__&#39;, &#39;__module__&#39;, &#39;data&#39;]
+&gt;&gt;&gt; old = OldClass(&#39;some input&#39;)
+&gt;&gt;&gt; print(type(old)) #doctest: +SKIP
+&lt;type &#39;instance&#39;&gt;
+&gt;&gt;&gt; print(dir(old)) #doctest: +SKIP
+[&#39;__doc__&#39;, &#39;__init__&#39;, &#39;__module__&#39;, &#39;data&#39;]
+
 ```
 ```
-    &gt;&gt;&gt; new = NewClass(&#39;some input&#39;)
-    &gt;&gt;&gt; print type(new)
-    &lt;class &#39;__main__.NewClass&#39;&gt;
-    &gt;&gt;&gt; print dir(new)
-    [&#39;__class__&#39;, &#39;__delattr__&#39;, &#39;__dict__&#39;, &#39;__doc__&#39;, 
-     &#39;__format__&#39;, &#39;__getattribute__&#39;, &#39;__hash__&#39;, &#39;__init__&#39;, 
-     &#39;__module__&#39;, &#39;__new__&#39;, &#39;__reduce__&#39;, &#39;__reduce_ex__&#39;, 
-     &#39;__repr__&#39;, &#39;__setattr__&#39;, &#39;__sizeof__&#39;, &#39;__str__&#39;, 
-     &#39;__subclasshook__&#39;, &#39;__weakref__&#39;, &#39;data&#39;]
+&gt;&gt;&gt; new = NewClass(&#39;some input&#39;)
+&gt;&gt;&gt; print(type(new))
+&lt;class &#39;__main__.NewClass&#39;&gt;
+&gt;&gt;&gt; print(dir(new))
+[&#39;__class__&#39;, &#39;__delattr__&#39;, &#39;__dict__&#39;, &#39;__dir__&#39;, &#39;__doc__&#39;, &#39;__eq__&#39;, &#39;__format__&#39;, &#39;__ge__&#39;, &#39;__getattribute__&#39;, &#39;__gt__&#39;, &#39;__hash__&#39;, &#39;__init__&#39;, &#39;__le__&#39;, &#39;__lt__&#39;, &#39;__module__&#39;, &#39;__ne__&#39;, &#39;__new__&#39;, &#39;__reduce__&#39;, &#39;__reduce_ex__&#39;, &#39;__repr__&#39;, &#39;__setattr__&#39;, &#39;__sizeof__&#39;, &#39;__str__&#39;, &#39;__subclasshook__&#39;, &#39;__weakref__&#39;, &#39;data&#39;]
+
+
 ```
 
 ---
@@ -339,6 +364,7 @@ Missing argument
     import sys
     arg1 = sys.argv[1]
     ...
+
 ```
 ```
     $ python exceptions.py
@@ -346,6 +372,7 @@ Missing argument
       File &#34;exceptions.py&#34;, line 3, in &lt;module&gt;
         arg1 = sys.argv[1]
     IndexError: list index out of range
+
 ```
 * The ``IndexError`` exception is raised because the code attempts to address a list element outside the range
     
@@ -356,6 +383,7 @@ Missing argument
     ...
     arg1 = sys.argv[1]
     inputfile  = open(arg1)
+
 ```
 ```bash
     $ python exceptions.py notafile
@@ -363,6 +391,7 @@ Missing argument
       File &#34;exceptions.py&#34;, line 4, in &lt;module&gt;
         inputfile = open(arg1)
     IOError: [Errno 2] No such file or directory: &#39;notafile&#39;
+
 ```
 
 * The ``IOError`` exception is raised because the code attempts to open a non-existing file
@@ -378,11 +407,12 @@ Missing argument
     try:
         f = open(sys.argv[1])
     except(IndexError):
-        print &#34;Usage: %s &lt;filename&gt;&#34; % sys.argv[0]
+        print(&#34;Usage: %s &lt;filename&gt;&#34; % sys.argv[0])
         sys.exit(1)
     except(IOError):
-        print &#34;%s: file %s not found&#34; % (sys.argv[0], sys.argv[1])
+        print(&#34;%s: file %s not found&#34; % (sys.argv[0], sys.argv[1]))
         sys.exit(1)
+
 ```
 ```
     $ python exceptions.py
@@ -390,6 +420,7 @@ Missing argument
     $ python exceptions.py notafile
     exceptions.py: file notafile not found
     $
+
 ```
     </textarea>
 
