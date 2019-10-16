@@ -1,6 +1,6 @@
 # Introduction to classes
 
-## Olav Vahtras
+## BB3110
 
 Computational Python
 
@@ -25,6 +25,7 @@ layout: false
 
 ### First example
 
+
 ```
 >>> class Fruit:
 ...     """A fruit object class"""
@@ -35,12 +36,23 @@ layout: false
 ...
 ...     def __str__(self):
 ...         print("entering Fruit.__str__")
-...         return "%s tastes sweet!" % self.name
+...         return f"{self.name} tastes sweet!"
 
 ```
 ```
 >>> fruit = Fruit("Banana")
 entering Fruit.__init__
+
+```
+
+```
+>>> str(fruit)
+entering Fruit.__str__
+'Banana tastes sweet!'
+
+```
+
+```
 >>> print(fruit)
 entering Fruit.__str__
 Banana tastes sweet!
@@ -51,21 +63,24 @@ Banana tastes sweet!
 ### A modified class
 
 * A subclass of ``Fruit`` (parent or super class)
-* Just redefine the ``__str__`` function
+* Redefine the ``__str__`` function
 
 ```
 >>> class Citrus(Fruit):
 ...     def __str__(self):
 ...         print("entering Citrus.__str__")
-...         return "%s tastes sour" % self.name
+...         return f"{self.name} tastes sour"
 
 ```
 ```
-    >>> lemon = Citrus("Lemon")
-    entering Fruit.__init__
-    >>> print(lemon)
-    entering Citrus.__str__
-    Lemon tastes sour
+>>> lemon = Citrus("Lemon")
+entering Fruit.__init__
+
+```
+```
+>>> print(lemon)
+entering Citrus.__str__
+Lemon tastes sour
 
 ```
 
@@ -87,18 +102,21 @@ Consider a more specialized class
 ...     
 ...     def __init__(self, name, taste="sweet"):
 ...         print("entering FruitWithTaste.__init__")
-...         Fruit.__init__(self, name) 
+...         super().__init__(name) 
 ...         self.taste = taste
 ...
 ...     def __str__(self):
 ...         print("entering FruitWithTaste.__str__")
-...         return "%s tastes %s!" % (self.name, self.taste)
+...         return f"{self.name} tastes {self.taste}!"
 
 ```
 ```
 >>> apple = FruitWithTaste("Apple")
 entering FruitWithTaste.__init__
 entering Fruit.__init__
+
+```
+```
 >>> print(apple)
 entering FruitWithTaste.__str__
 Apple tastes sweet!
@@ -128,86 +146,37 @@ Apple tastes sweet!
 ...
 ...     def __str__(self):
 ...         print("entering FruitWithTaste.__str__")
-...         return "%s tastes %s!" % (self.name, self.taste)
+...         return f"{self.name} tastes {self.taste}!"
 ...     def rot(self):
 ...         self.taste = "rotten"
 
 ```
+---
+
 ```
 >>> apple = FruitWithTaste("Apple")
 entering FruitWithTaste.__init__
 entering Fruit.__init__
 
 ```
+
+```
 >>> apple.rot()
 
 ```
+
 ```
 >>> print(apple)
 entering FruitWithTaste.__str__
 Apple tastes rotten!
 
 ```
----
-
-### Classical and new style classes
-
-
-* in older code class definitions have the form
-```
->>> class OldClass:
-...
-...     def __init__(self, indata):
-...         self .data = indata
-
-```
-
-* in newer code top-level classes are written as a subclass of a general object class
-
-```
->>> class NewClass(object):
-...     def __init__(self, indata):
-...         self .data = indata
-
-```   
----
-
-To illustrate the difference
-
-```
->>> old = OldClass('some input')
->>> print(type(old)) #doctest: +SKIP
-<type 'instance'>
->>> print(dir(old)) #doctest: +SKIP
-['__doc__', '__init__', '__module__', 'data']
-
-```
-```
->>> new = NewClass('some input')
->>> print(type(new))
-<class '__main__.NewClass'>
->>> print(dir(new))
-['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', 'data']
-
-
-```
 
 ---
 
-New style classes:
+## Exceptions
 
-
-* a more modern implementation of the classes with more functionality
-* in Python 3, all classes are of the modern kind.
-* possible to subclass ``dict`` and ``list`` types
-
-*Recommendation: always declare top-level classes with `object`*
-
----
-
-### Exceptions
-
-#### Error handling in python
+### Error handling in python
 
 * When there is an error, the program stops with a stack trace
 * The error type is written
@@ -216,7 +185,7 @@ New style classes:
 
 ---
 
-#### Common errors
+### Common errors
 
 Missing argument 
 
@@ -239,7 +208,7 @@ Missing argument
     
 ---
 
-#### File missing
+### File missing
 ```
     ...
     arg1 = sys.argv[1]
@@ -251,11 +220,11 @@ Missing argument
     Traceback (most recent call last):
       File "exceptions.py", line 4, in <module>
         inputfile = open(arg1)
-    IOError: [Errno 2] No such file or directory: 'notafile'
+    FileNotFoundError: [Errno 2] No such file or directory: 'notafile'
 
 ```
 
-* The ``IOError`` exception is raised because the code attempts to open a non-existing file
+* The ``FileNotFoundError`` exception is raised because the code attempts to open a non-existing file
 * By default, the ``open`` statement assumes open for reading.
 
 ---
@@ -265,21 +234,35 @@ Missing argument
 * Errors which can be predicted can be handled by a ``try-except`` block
 
 ```
-    try:
-        f = open(sys.argv[1])
-    except(IndexError):
-        print("Usage: %s <filename>" % sys.argv[0])
-        sys.exit(1)
-    except(IOError):
-        print("%s: file %s not found" % (sys.argv[0], sys.argv[1]))
-        sys.exit(1)
+import sys
+
+try:
+    f = open(sys.argv[1])
+except(IndexError):
+    print(f"Usage: {sys.argv[0]}  <filename>")
+    sys.exit(1)
+except(FileNotFoundError):
+    print(f"{sys.argv[0]}: file {sys.argv[1]} not found")
+    sys.exit(1)
+
+class WrongFileType(Exception):
+    pass
+
+if not sys.argv[1].endswith('.txt'):
+    raise WrongFileType
+    
 
 ```
 ```
-    $ python exceptions.py
-    Usage: exceptions.py <filename>
-    $ python exceptions.py notafile
-    exceptions.py: file notafile not found
-    $
+$ python exceptions.py
+Usage: exceptions.py <filename>
+$ python exceptions.py notafile
+exceptions.py: file notafile not found
+$ python exceptions somefile.wrongtype
+Traceback (most recent call last):
+  File "exceptions.py", line 16, in <module>
+    raise WrongFileType
+__main__.WrongFileType
+
 
 ```
